@@ -11,6 +11,11 @@ Agenda de contatos é um aplicativo que salva no banco de dados Room algumas inf
 * Activity para host de telas
 * Compose
 * RoomDataBase
+* Hilt
+* MVVM
+* ViewModel
+* NavHost
+* NavController
 * CRUD
 * LazyColumn
 * Button
@@ -30,7 +35,7 @@ Agenda de contatos é um aplicativo que salva no banco de dados Room algumas inf
 - Melhorar estilização do app
 
 ## Author
-Victor Hugo Boico (follow me on [Linkedin](https://www.linkedin.com/in/victor-boico-a13560269/))
+Victor Hugo Boico (follow me on [Linkedin](https://www.linkedin.com/in/victorboico/))
 
 ## License
 ```
