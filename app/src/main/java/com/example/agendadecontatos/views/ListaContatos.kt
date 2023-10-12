@@ -9,44 +9,27 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.agendadecontatos.AppDatabase
 import com.example.agendadecontatos.R
-import com.example.agendadecontatos.dao.ContatoDao
 import com.example.agendadecontatos.itemlista.ContatoItem
-import com.example.agendadecontatos.model.Contato
 import com.example.agendadecontatos.ui.theme.Purple40
 import com.example.agendadecontatos.ui.theme.white
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-
-
-private lateinit var contatoDao: ContatoDao
+import com.example.agendadecontatos.viewmodel.ContatoViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
-fun ListaContatos(navController: NavController){
+fun ListaContatos(navController: NavController, viewModel: ContatoViewModel = hiltViewModel()){
 
     val context = LocalContext.current
-    val listaContatos: MutableList<Contato> = mutableListOf()
-    val scope = rememberCoroutineScope()
 
-    scope.launch(Dispatchers.IO){
-        contatoDao = AppDatabase.getInstance(context).contatodao()
-        val contatos = contatoDao.getContatos()
-
-        for (contato in contatos){
-            listaContatos.add(contato)
-        }
-    }
+    val listaContatos = viewModel.getContato().collectAsState(mutableListOf()).value
 
     Scaffold (
         topBar = {
@@ -78,16 +61,16 @@ fun ListaContatos(navController: NavController){
     ){
 
         LazyColumn{
-            itemsIndexed(listaContatos){position, item ->
-                ContatoItem(navController, position, listaContatos, context)
+            itemsIndexed(listaContatos){position, _ ->
+                ContatoItem(navController, position, listaContatos, context, viewModel)
             }
         }
 
     }
 }
 
-@Preview
-@Composable
-fun ListaContatosPreview(){
-    ListaContatos(navController = rememberNavController())
-}
+//@Preview
+//@Composable
+//fun ListaContatosPreview(){
+//    ListaContatos(navController = rememberNavController())
+//}

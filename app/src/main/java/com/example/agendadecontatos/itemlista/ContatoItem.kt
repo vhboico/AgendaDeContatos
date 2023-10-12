@@ -21,17 +21,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.agendadecontatos.AppDatabase
 import com.example.agendadecontatos.R
-import com.example.agendadecontatos.dao.ContatoDao
 import com.example.agendadecontatos.model.Contato
 import com.example.agendadecontatos.ui.theme.ShapesCardView
 import com.example.agendadecontatos.ui.theme.white
+import com.example.agendadecontatos.viewmodel.ContatoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private lateinit var contatoDao: ContatoDao
 
 
 @Composable
@@ -39,7 +38,8 @@ fun ContatoItem(
     navController: NavController,
     position: Int,
     listaContato: MutableList<Contato>,
-    context: Context
+    context: Context,
+    viewModel: ContatoViewModel = hiltViewModel()
 ) {
 
     val scope = rememberCoroutineScope()
@@ -50,17 +50,13 @@ fun ContatoItem(
     val celular = listaContato[position].celular
     val uid = listaContato[position].uid
 
-    val contato = listaContato[position]
-
     fun alertDialog() {
         val alertDialog = AlertDialog.Builder(context)
         alertDialog.setTitle("Deseja excluir?")
             .setMessage("Tem certeza?")
             .setPositiveButton("Ok"){_,_ ->
                 scope.launch(Dispatchers.IO){
-                    contatoDao = AppDatabase.getInstance(context).contatodao()
-                    contatoDao.delete(uid)
-                    listaContato.remove(contato)
+                    viewModel.deletar(uid)
                 }
 
                 scope.launch(Dispatchers.Main){

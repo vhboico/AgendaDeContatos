@@ -24,21 +24,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.agendadecontatos.AppDatabase
 import com.example.agendadecontatos.componentes.ButtonCustom
 import com.example.agendadecontatos.componentes.OutlineTextFieldCustom
-import com.example.agendadecontatos.dao.ContatoDao
 import com.example.agendadecontatos.ui.theme.Purple40
 import com.example.agendadecontatos.ui.theme.white
+import com.example.agendadecontatos.viewmodel.ContatoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private lateinit var contatoDao: ContatoDao
-
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun AtualizarContatos(navController: NavController, uid: String) {
+fun AtualizarContatos(navController: NavController, viewModel: ContatoViewModel = hiltViewModel(), uid: String) {
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -120,17 +118,15 @@ fun AtualizarContatos(navController: NavController, uid: String) {
             ButtonCustom(
                 onClick = {
 
-                    var mensagem = false
+                    val mensagem: Boolean
 
-                    scope.launch(Dispatchers.IO) {
                         if (nome.isEmpty() || sobrenome.isEmpty() || idade.isEmpty() || celular.isEmpty()) {
                             mensagem = false
                         } else {
                             mensagem = true
-                            contatoDao = AppDatabase.getInstance(context).contatodao()
-                            contatoDao.atualizar(uid.toInt(), nome, sobrenome, idade, celular)
+                            viewModel.atualizarContato(uid.toInt(), nome, sobrenome, idade, celular)
                         }
-                    }
+
 
                     scope.launch(Dispatchers.IO){
                         if (mensagem){
